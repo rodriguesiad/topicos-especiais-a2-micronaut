@@ -1,0 +1,20 @@
+micronaut:
+  application:
+    name: eventosapp
+  server:
+    port: 8080
+
+datasources:
+  default:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:eventos_db}?autoReconnect=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: ${MYSQL_USER:usereventos}
+    password: ${MYSQL_PASSWORD:passeventos}
+    driverClassName: com.mysql.cj.jdbc.Driver
+    dialect: MYSQL
+
+flyway:
+  datasources:
+    default:
+      enabled: true
+      locations: classpath:db/migration
+      # baseline-on-migrate: true
