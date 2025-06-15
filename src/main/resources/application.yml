@@ -6,7 +6,7 @@ micronaut:
 
 datasources:
   default:
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:eventos_db}?autoReconnect=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3307}/${MYSQL_DATABASE:eventos_db}?autoReconnect=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: ${MYSQL_USER:usereventos}
     password: ${MYSQL_PASSWORD:passeventos}
     driverClassName: com.mysql.cj.jdbc.Driver

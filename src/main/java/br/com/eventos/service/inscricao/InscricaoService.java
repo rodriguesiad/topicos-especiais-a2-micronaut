@@ -5,7 +5,7 @@ import br.com.eventos.exception.ApiException;
 import br.com.eventos.model.Inscricao;
 import br.com.eventos.service.BaseService;
 
-public interface InscricaoService extends BaseService<Inscricao> {
+public interface InscricaoService extends BaseService<Inscricao, Long> {
 
     Inscricao cadastrar(InscricaoDTO dto) throws ApiException;
 

@@ -112,6 +112,16 @@
       <artifactId>junit-jupiter-engine</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>io.micronaut.security</groupId>
+      <artifactId>micronaut-security</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+      <scope>runtime</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -160,6 +170,7 @@
               <artifactId>micronaut-http-validation</artifactId>
               <version>${micronaut.core.version}</version>
             </path>
+            <path>
               <groupId>io.micronaut.security</groupId>
               <artifactId>micronaut-security-annotations</artifactId>
               <version>${micronaut.security.version}</version>
@@ -169,6 +180,7 @@
                   <artifactId>micronaut-inject</artifactId>
                 </exclusion>
               </exclusions>
+            </path>
             <path>
               <groupId>io.micronaut.serde</groupId>
               <artifactId>micronaut-serde-processor</artifactId>

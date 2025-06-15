@@ -7,7 +7,7 @@ import io.micronaut.data.model.query.builder.sql.Dialect;
 import java.util.List;
 
 @JdbcRepository(dialect = Dialect.MYSQL)
-public interface InscricaoRepository extends BaseRepository<Inscricao> {
+public interface InscricaoRepository extends BaseRepository<Inscricao, Long> {
 
     List<Inscricao> findByAtivoAndEventoId(Boolean ativo, Long idEvento);
 

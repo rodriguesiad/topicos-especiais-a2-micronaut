@@ -5,7 +5,6 @@ import br.com.eventos.exception.ApiException;
 import br.com.eventos.model.Evento;
 import br.com.eventos.model.Inscricao;
 import br.com.eventos.model.Usuario;
-import br.com.eventos.repository.BaseRepository;
 import br.com.eventos.repository.EventoRepository;
 import br.com.eventos.repository.InscricaoRepository;
 import br.com.eventos.repository.UsuarioRepository;
@@ -16,12 +15,12 @@ import jakarta.inject.Singleton;
 import java.time.LocalDate;
 
 @Singleton
-public class InscricaoServiceImpl extends BaseServiceImpl<Inscricao> implements InscricaoService {
+public class InscricaoServiceImpl extends BaseServiceImpl<Inscricao, Long> implements InscricaoService {
 
     private final UsuarioRepository usuarioRepository;
     private final EventoRepository eventoRepository;
 
-    public InscricaoServiceImpl(BaseRepository<Inscricao> inscricaoRepository,
+    public InscricaoServiceImpl(InscricaoRepository inscricaoRepository,
                                 UsuarioRepository usuarioRepository,
                                 EventoRepository eventoRepository) {
         super(inscricaoRepository);

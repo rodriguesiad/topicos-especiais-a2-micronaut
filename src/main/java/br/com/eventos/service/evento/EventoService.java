@@ -5,7 +5,7 @@ import br.com.eventos.exception.ApiException;
 import br.com.eventos.model.Evento;
 import br.com.eventos.service.BaseService;
 
-public interface EventoService extends BaseService<Evento> {
+public interface EventoService extends BaseService<Evento, Long> {
 
     Evento cadastrar(EventoDTO dto) throws ApiException;
 

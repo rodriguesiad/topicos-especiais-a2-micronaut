@@ -5,7 +5,6 @@ import br.com.eventos.exception.ApiException;
 import br.com.eventos.model.Evento;
 import br.com.eventos.model.Usuario;
 import br.com.eventos.model.enums.StatusEvento;
-import br.com.eventos.repository.BaseRepository;
 import br.com.eventos.repository.EventoRepository;
 import br.com.eventos.repository.UsuarioRepository;
 import br.com.eventos.service.BaseServiceImpl;
@@ -13,11 +12,11 @@ import io.micronaut.transaction.annotation.Transactional;
 import jakarta.inject.Singleton;
 
 @Singleton
-public class EventoServiceImpl extends BaseServiceImpl<Evento> implements EventoService {
+public class EventoServiceImpl extends BaseServiceImpl<Evento, Long> implements EventoService {
 
     private final UsuarioRepository usuarioRepository;
 
-    public EventoServiceImpl(BaseRepository<Evento> eventoRepository,
+    public EventoServiceImpl(EventoRepository eventoRepository,
                              UsuarioRepository usuarioRepository) {
         super(eventoRepository);
         this.usuarioRepository = usuarioRepository;
