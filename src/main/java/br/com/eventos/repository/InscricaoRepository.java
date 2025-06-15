@@ -11,4 +11,7 @@ public interface InscricaoRepository extends BaseRepository<Inscricao> {
 
     List<Inscricao> findByAtivoAndEventoId(Boolean ativo, Long idEvento);
 
+    List<Inscricao> findByUsuario_Id(Long idUsuario);
+
+
 }

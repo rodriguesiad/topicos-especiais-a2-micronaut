@@ -13,5 +13,6 @@ public interface InscricaoService extends BaseService<Inscricao> {
 
     Iterable<Inscricao> buscarInscricoesPorEvento(Long eventoId);
 
+    Iterable<Inscricao> buscarInscricaoUsuario(Long idUsuario) throws ApiException;
 
 }

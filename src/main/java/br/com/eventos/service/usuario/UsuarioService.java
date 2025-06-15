@@ -4,4 +4,5 @@ import br.com.eventos.model.Usuario;
 import br.com.eventos.service.BaseService;
 
 public interface UsuarioService extends BaseService<Usuario> {
+    
 }

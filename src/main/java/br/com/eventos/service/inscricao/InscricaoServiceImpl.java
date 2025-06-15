@@ -10,6 +10,7 @@ import br.com.eventos.repository.EventoRepository;
 import br.com.eventos.repository.InscricaoRepository;
 import br.com.eventos.repository.UsuarioRepository;
 import br.com.eventos.service.BaseServiceImpl;
+import io.micronaut.transaction.annotation.Transactional;
 import jakarta.inject.Singleton;
 
 import java.time.LocalDate;
@@ -29,6 +30,7 @@ public class InscricaoServiceImpl extends BaseServiceImpl<Inscricao> implements 
     }
 
     @Override
+    @Transactional
     public Inscricao cadastrarInscricao(InscricaoDTO dto) throws ApiException {
         Evento evento = eventoRepository.findById(dto.idEvento()).orElseThrow(() -> new ApiException("Evento não encontrado"));
         Usuario usuario = buscarUsuarioLogado();
@@ -38,10 +40,17 @@ public class InscricaoServiceImpl extends BaseServiceImpl<Inscricao> implements 
     }
 
     @Override
+    @Transactional
     public void cancelarInscricao(Long idInscricao) throws ApiException {
         Inscricao inscricao = getRepository().findById(idInscricao).orElseThrow(() -> new ApiException("Inscrição não encontrada"));
         inscricao = new Inscricao(inscricao.id(), inscricao.evento(), inscricao.usuario(), inscricao.dataInscricao(), false);
         getRepository().update(inscricao);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Iterable<Inscricao> buscarInscricaoUsuario(Long idUsuario) throws ApiException {
+        return getRepository().findByUsuario_Id(idUsuario);
     }
 
     private Usuario buscarUsuarioLogado() {
