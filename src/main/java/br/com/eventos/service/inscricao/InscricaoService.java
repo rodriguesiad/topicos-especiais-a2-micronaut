@@ -7,12 +7,12 @@ import br.com.eventos.service.BaseService;
 
 public interface InscricaoService extends BaseService<Inscricao> {
 
-    Inscricao cadastrarInscricao(InscricaoDTO dto) throws ApiException;
+    Inscricao cadastrar(InscricaoDTO dto) throws ApiException;
 
     void cancelarInscricao(Long idInscricao) throws ApiException;
 
     Iterable<Inscricao> buscarInscricoesPorEvento(Long eventoId);
 
-    Iterable<Inscricao> buscarInscricaoUsuario(Long idUsuario) throws ApiException;
+    Iterable<Inscricao> buscarInscricoesUsuario(Long idUsuario) throws ApiException;
 
 }

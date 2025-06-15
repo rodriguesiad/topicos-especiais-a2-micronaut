@@ -25,7 +25,7 @@ public class EventoServiceImpl extends BaseServiceImpl<Evento> implements Evento
 
     @Override
     @Transactional
-    public Evento cadastrarEvento(EventoDTO dto) throws ApiException {
+    public Evento cadastrar(EventoDTO dto) throws ApiException {
         Usuario usuario = buscarUsuarioLogado();
         Evento evento = new Evento(null, dto.nome(), dto.data(), dto.local(), usuario, StatusEvento.ATIVO);
         return super.cadastrar(evento);
@@ -69,7 +69,7 @@ public class EventoServiceImpl extends BaseServiceImpl<Evento> implements Evento
         evento = new Evento(evento.id(), evento.nome(), evento.data(), evento.local(), evento.usuario(), StatusEvento.CONCLUIDO);
         getRepository().update(evento);
     }
-    
+
     @Override
     @Transactional(readOnly = true)
     public Iterable<Evento> buscarEventosPorUsuario(Long idUsuario) throws ApiException {

@@ -31,7 +31,7 @@ public class InscricaoServiceImpl extends BaseServiceImpl<Inscricao> implements 
 
     @Override
     @Transactional
-    public Inscricao cadastrarInscricao(InscricaoDTO dto) throws ApiException {
+    public Inscricao cadastrar(InscricaoDTO dto) throws ApiException {
         Evento evento = eventoRepository.findById(dto.idEvento()).orElseThrow(() -> new ApiException("Evento não encontrado"));
         Usuario usuario = buscarUsuarioLogado();
         Inscricao inscricao = new Inscricao(null, evento, usuario, LocalDate.now(), true);
@@ -49,7 +49,7 @@ public class InscricaoServiceImpl extends BaseServiceImpl<Inscricao> implements 
 
     @Override
     @Transactional(readOnly = true)
-    public Iterable<Inscricao> buscarInscricaoUsuario(Long idUsuario) throws ApiException {
+    public Iterable<Inscricao> buscarInscricoesUsuario(Long idUsuario) throws ApiException {
         return getRepository().findByUsuario_Id(idUsuario);
     }
 
