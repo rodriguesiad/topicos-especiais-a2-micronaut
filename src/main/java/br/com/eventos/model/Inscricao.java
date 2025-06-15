@@ -5,7 +5,6 @@ import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.MappedEntity;
 import io.micronaut.data.annotation.Relation;
 import io.micronaut.serde.annotation.Serdeable;
-import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
@@ -26,6 +25,7 @@ public record Inscricao(
         @NotNull(message = "A data da inscrição é obrigatória")
         LocalDate dataInscricao,
 
-        @Nullable
-        String status
-) {}
+        @NotNull
+        Boolean ativo
+) {
+}

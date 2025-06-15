@@ -34,4 +34,7 @@ public class BaseServiceImpl<T> implements BaseService<T> {
         return this.repository.findAll();
     }
 
+    public BaseRepository<T> getRepository() {
+        return this.repository;
+    }
 }

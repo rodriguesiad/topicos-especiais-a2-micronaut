@@ -25,6 +25,9 @@ public record Evento(
 
         @NotNull(message = "O usuário organizador é obrigatório")
         @Relation(value = Relation.Kind.MANY_TO_ONE)
-        Usuario usuario
+        Usuario usuario,
+
+        @NotNull
+        Boolean ativo
 ) {
 }

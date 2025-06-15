@@ -11,6 +11,7 @@ CREATE TABLE evento (
                         data DATE NOT NULL,
                         local VARCHAR(255),
                         usuario_id BIGINT NOT NULL,
+                        ativo BOOL NOT NULL,
                         FOREIGN KEY (usuario_id) REFERENCES usuario(id)
 );
 
@@ -19,7 +20,7 @@ CREATE TABLE inscricao (
                            evento_id BIGINT NOT NULL,
                            usuario_id BIGINT NOT NULL,
                            data_inscricao DATE NOT NULL,
-                           status VARCHAR(50),
+                           ativo BOOL NOT NULL,
                            FOREIGN KEY (evento_id) REFERENCES evento(id),
                            FOREIGN KEY (usuario_id) REFERENCES usuario(id)
 );
