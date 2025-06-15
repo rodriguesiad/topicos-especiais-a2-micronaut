@@ -15,7 +15,6 @@ public record Evento(
         @Id
         @GeneratedValue
         Long id,
-
         @NotNull(message = "O nome do evento é obrigatório")
         String nome,
 

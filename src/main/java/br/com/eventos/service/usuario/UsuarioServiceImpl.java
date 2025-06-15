@@ -1,35 +1,14 @@
 package br.com.eventos.service.usuario;
 
-import io.micronaut.transaction.annotation.Transactional;
-import jakarta.inject.Singleton;
-import java.util.Optional;
-
 import br.com.eventos.model.Usuario;
-import br.com.eventos.repository.UsuarioRepository;
+import br.com.eventos.repository.BaseRepository;
+import br.com.eventos.service.BaseServiceImpl;
+import jakarta.inject.Singleton;
 
 @Singleton
-public class UsuarioServiceImpl implements UsuarioService {
-    private final UsuarioRepository usuarioRepository;
-
-    public UsuarioServiceImpl(UsuarioRepository usuarioRepository) {
-        this.usuarioRepository = usuarioRepository;
+public class UsuarioServiceImpl extends BaseServiceImpl<Usuario> implements UsuarioService {
+    public UsuarioServiceImpl(BaseRepository<Usuario> usuarioRepository) {
+        super(usuarioRepository);
     }
 
-    @Override
-    @Transactional
-    public Usuario salvarUsuario(Usuario usuario) {
-        return usuarioRepository.save(usuario);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Optional<Usuario> buscarPorId(Long id) {
-        return usuarioRepository.findById(id);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Iterable<Usuario> buscarTodos() {
-        return usuarioRepository.findAll();
-    }
 }

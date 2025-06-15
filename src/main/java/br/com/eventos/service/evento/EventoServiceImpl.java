@@ -1,17 +1,19 @@
 package br.com.eventos.service.evento;
 
-import br.com.eventos.repository.EventoRepository;
+import br.com.eventos.model.Evento;
+import br.com.eventos.repository.BaseRepository;
 import br.com.eventos.repository.UsuarioRepository;
+import br.com.eventos.service.BaseServiceImpl;
 import jakarta.inject.Singleton;
 
 @Singleton
-public class EventoServiceImpl implements EventoService {
-    private final EventoRepository eventoRepository;
+public class EventoServiceImpl extends BaseServiceImpl<Evento> implements EventoService {
+
     private final UsuarioRepository usuarioRepository;
 
-    public EventoServiceImpl(EventoRepository eventoRepository,
+    public EventoServiceImpl(BaseRepository<Evento> eventoRepository,
                              UsuarioRepository usuarioRepository) {
-        this.eventoRepository = eventoRepository;
+        super(eventoRepository);
         this.usuarioRepository = usuarioRepository;
     }
 
