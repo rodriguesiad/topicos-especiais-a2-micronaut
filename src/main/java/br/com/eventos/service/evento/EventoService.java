@@ -11,4 +11,10 @@ public interface EventoService extends BaseService<Evento> {
 
     Evento atualizarEvento(Long id, EventoDTO dto) throws ApiException;
 
+    void cancelarEvento(Long id) throws ApiException;
+
+    void concluirEvento(Long id) throws ApiException;
+
+    Iterable<Evento> buscarEventosPorUsuario(Long idUsuario) throws ApiException;
+
 }

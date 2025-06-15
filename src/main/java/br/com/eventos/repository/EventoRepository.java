@@ -9,4 +9,6 @@ import java.util.List;
 @JdbcRepository(dialect = Dialect.MYSQL)
 public interface EventoRepository extends BaseRepository<Evento> {
 
+    List<Evento> findByUsuario_Id(Long idUsuario);
+    
 }

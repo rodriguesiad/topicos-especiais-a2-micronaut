@@ -1,5 +1,6 @@
 package br.com.eventos.model;
 
+import br.com.eventos.model.enums.StatusEvento;
 import io.micronaut.data.annotation.GeneratedValue;
 import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.MappedEntity;
@@ -28,6 +29,6 @@ public record Evento(
         Usuario usuario,
 
         @NotNull
-        Boolean ativo
+        StatusEvento status
 ) {
 }

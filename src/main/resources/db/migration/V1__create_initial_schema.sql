@@ -11,7 +11,7 @@ CREATE TABLE evento (
                         data DATE NOT NULL,
                         local VARCHAR(255),
                         usuario_id BIGINT NOT NULL,
-                        ativo BOOL NOT NULL,
+                        status VARCHAR(10) NOT NULL,
                         FOREIGN KEY (usuario_id) REFERENCES usuario(id)
 );
 
