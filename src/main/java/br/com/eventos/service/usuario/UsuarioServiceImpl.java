@@ -1,7 +1,8 @@
 package br.com.eventos.service.usuario;
 
+import br.com.eventos.dto.UsuarioDTO;
+import br.com.eventos.entity.Usuario;
 import br.com.eventos.exception.ApiException;
-import br.com.eventos.model.Usuario;
 import br.com.eventos.repository.UsuarioRepository;
 import io.micronaut.transaction.annotation.Transactional;
 import jakarta.inject.Singleton;
@@ -19,8 +20,16 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     @Transactional
-    public Usuario cadastrar(Usuario model) throws ApiException {
-        return this.usuarioRepository.save(model);
+    public Usuario cadastrar(UsuarioDTO dto) throws ApiException {
+        Optional<Usuario> usuarioCadastrado = this.usuarioRepository.findByEmail(dto.email());
+
+        if (usuarioCadastrado.isPresent()) {
+            throw new ApiException("O e-mail informado já está cadastrado.");
+        }
+
+        Usuario usuario = new Usuario(null, dto.nome(), dto.email(), dto.senha());
+
+        return this.usuarioRepository.save(usuario);
     }
 
     @Override
@@ -34,6 +43,12 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Transactional(readOnly = true)
     public Iterable<Usuario> buscarTodos() {
         return this.usuarioRepository.findAll();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Usuario buscarPorEmail(String email) {
+        return usuarioRepository.findByEmail(email).orElse(null);
     }
 
 }

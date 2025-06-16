@@ -2,11 +2,12 @@ package br.com.eventos.service.evento;
 
 import br.com.eventos.dto.EventoDTO;
 import br.com.eventos.exception.ApiException;
-import br.com.eventos.model.Evento;
-import br.com.eventos.model.Usuario;
-import br.com.eventos.model.enums.StatusEvento;
+import br.com.eventos.entity.Evento;
+import br.com.eventos.entity.Usuario;
+import br.com.eventos.entity.enums.StatusEvento;
 import br.com.eventos.repository.EventoRepository;
 import br.com.eventos.repository.UsuarioRepository;
+import io.micronaut.security.utils.SecurityService;
 import io.micronaut.transaction.annotation.Transactional;
 import jakarta.inject.Singleton;
 
@@ -17,11 +18,15 @@ public class EventoServiceImpl implements EventoService {
 
     private final EventoRepository eventoRepository;
     private final UsuarioRepository usuarioRepository;
+    private final SecurityService securityService;
 
     public EventoServiceImpl(EventoRepository eventoRepository,
-                             UsuarioRepository usuarioRepository) {
+                             UsuarioRepository usuarioRepository,
+                             SecurityService securityService) {
         this.eventoRepository = eventoRepository;
         this.usuarioRepository = usuarioRepository;
+        this.securityService = securityService;
+
     }
 
     @Override
@@ -50,11 +55,14 @@ public class EventoServiceImpl implements EventoService {
     public Evento atualizarEvento(Long id, EventoDTO dto) throws ApiException {
         Evento evento = this.eventoRepository.findById(id).orElseThrow(() -> new ApiException("Evento não encontrado"));
 
-        if (!isUsuarioDono(evento.usuario().id())) {
-            throw new IllegalArgumentException("Você não tem permissão para atualizar este evento.");
+        if (!isUsuarioDono(evento.getUsuario().getId())) {
+            throw new ApiException("Você não tem permissão para atualizar este evento.");
         }
 
-        evento = new Evento(id, dto.nome(), dto.data(), dto.local(), evento.usuario(), evento.status());
+        evento.setNome(dto.nome());
+        evento.setData(dto.data());
+        evento.setLocal(dto.local());
+
         return this.eventoRepository.update(evento);
     }
 
@@ -63,11 +71,11 @@ public class EventoServiceImpl implements EventoService {
     public void cancelarEvento(Long id) throws ApiException {
         Evento evento = this.eventoRepository.findById(id).orElseThrow(() -> new ApiException("Evento não encontrado"));
 
-        if (!isUsuarioDono(evento.usuario().id())) {
-            throw new IllegalArgumentException("Você não tem permissão para cancelar este evento.");
+        if (!isUsuarioDono(evento.getUsuario().getId())) {
+            throw new ApiException("Você não tem permissão para cancelar este evento.");
         }
 
-        evento = new Evento(evento.id(), evento.nome(), evento.data(), evento.local(), evento.usuario(), StatusEvento.CANCELADO);
+        evento.setStatus(StatusEvento.CANCELADO);
         this.eventoRepository.update(evento);
     }
 
@@ -76,27 +84,33 @@ public class EventoServiceImpl implements EventoService {
     public void concluirEvento(Long id) throws ApiException {
         Evento evento = this.eventoRepository.findById(id).orElseThrow(() -> new ApiException("Evento não encontrado"));
 
-        if (!isUsuarioDono(evento.usuario().id())) {
-            throw new IllegalArgumentException("Você não tem permissão para concluir este evento.");
+        if (!isUsuarioDono(evento.getUsuario().getId())) {
+            throw new ApiException("Você não tem permissão para concluir este evento.");
         }
 
-        evento = new Evento(evento.id(), evento.nome(), evento.data(), evento.local(), evento.usuario(), StatusEvento.CONCLUIDO);
-        this.eventoRepository.update(evento);
+        evento.setStatus(StatusEvento.CONCLUIDO);
+        this.eventoRepository.save(evento);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Iterable<Evento> buscarEventosPorUsuario(Long idUsuario) throws ApiException {
-        return this.eventoRepository.findByUsuario_Id(idUsuario);
+    public Iterable<Evento> buscarEventosUsuarioLogado() throws ApiException {
+        Usuario usuario = buscarUsuarioLogado();
+        return this.eventoRepository.findByUsuario_Id(usuario.getId());
     }
 
     private Usuario buscarUsuarioLogado() {
-        return usuarioRepository.findById(1L).orElseThrow(() -> new ApiException("Usuário não encontrado"));
+        return securityService.getAuthentication()
+                .flatMap(auth -> {
+                    String username = auth.getName();
+                    return usuarioRepository.findByEmail(username);
+                })
+                .orElseThrow(() -> new ApiException("Usuário logado não encontrado"));
     }
 
     private Boolean isUsuarioDono(Long idUsuarioEvento) {
         Usuario usuarioLogado = buscarUsuarioLogado();
-        return usuarioLogado.id() == idUsuarioEvento;
+        return usuarioLogado.getId() == idUsuarioEvento;
     }
 
 }

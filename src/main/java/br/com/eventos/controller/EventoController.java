@@ -1,7 +1,8 @@
 package br.com.eventos.controller;
 
 import br.com.eventos.dto.EventoDTO;
-import br.com.eventos.model.Evento;
+import br.com.eventos.dto.EventoResponseDTO;
+import br.com.eventos.entity.Evento;
 import br.com.eventos.service.evento.EventoService;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
@@ -11,10 +12,16 @@ import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.Post;
 import io.micronaut.http.annotation.Put;
+import io.micronaut.security.annotation.Secured;
+import io.micronaut.security.rules.SecurityRule;
 import jakarta.validation.Valid;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
+@Secured(SecurityRule.IS_AUTHENTICATED)
 @Controller("/eventos")
 public class EventoController {
 
@@ -25,46 +32,44 @@ public class EventoController {
     }
 
     @Post(consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<Evento> adicionarEvento(@Body @Valid EventoDTO evento) {
+    public HttpResponse<EventoResponseDTO> adicionarEvento(@Body @Valid EventoDTO evento) {
         Evento novoEvento = eventoService.cadastrar(evento);
-        return HttpResponse.created(novoEvento);
+        return HttpResponse.created(EventoResponseDTO.toResponse(novoEvento));
     }
 
     @Put(value = "/{id}", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<Evento> atualizarEvento(@PathVariable Long id, @Body @Valid EventoDTO eventoDTO) {
+    public HttpResponse<EventoResponseDTO> atualizarEvento(@PathVariable Long id, @Body @Valid EventoDTO eventoDTO) {
         Evento eventoAtualizado = eventoService.atualizarEvento(id, eventoDTO);
-        return HttpResponse.ok(eventoAtualizado);
+        return HttpResponse.ok(EventoResponseDTO.toResponse(eventoAtualizado));
     }
 
-    @Put(value = "/{id}", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @Put(value = "/cancelar/{id}", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
     public HttpResponse<Void> cancelarEvento(@PathVariable Long id) {
         eventoService.cancelarEvento(id);
         return HttpResponse.noContent();
     }
 
-    @Put(value = "/{id}", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @Put(value = "/concluir/{id}", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
     public HttpResponse<Void> concluirEvento(@PathVariable Long id) {
         eventoService.concluirEvento(id);
         return HttpResponse.noContent();
     }
 
     @Get(value = "/{id}", produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<Evento> buscarEventoPorId(@PathVariable Long id) {
-        Optional<Evento> EventoOpt = eventoService.buscarPorId(id);
-        return EventoOpt.map(HttpResponse::ok)
+    public HttpResponse<EventoResponseDTO> buscarEventoPorId(@PathVariable Long id) {
+        Optional<Evento> eventoOpt = eventoService.buscarPorId(id);
+        return eventoOpt
+                .map(evento -> HttpResponse.ok(EventoResponseDTO.toResponse(evento)))
                 .orElseGet(HttpResponse::notFound);
     }
 
     @Get(produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<Iterable<Evento>> listarTodosEventos() {
+    public HttpResponse<Iterable<EventoResponseDTO>> listarTodosEventos() {
         Iterable<Evento> eventos = eventoService.buscarTodos();
-        return HttpResponse.ok(eventos);
-    }
-
-    @Get(value = "/{idUsuario}", produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<Iterable<Evento>> listarTodosEventosPorUsuario(@PathVariable Long idUsuario) {
-        Iterable<Evento> eventos = eventoService.buscarEventosPorUsuario(idUsuario);
-        return HttpResponse.ok(eventos);
+        List<EventoResponseDTO> response = StreamSupport.stream(eventos.spliterator(), false)
+                .map(EventoResponseDTO::toResponse)
+                .collect(Collectors.toList());
+        return HttpResponse.ok(response);
     }
 
 }

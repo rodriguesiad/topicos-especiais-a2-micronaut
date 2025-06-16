@@ -2,7 +2,7 @@ package br.com.eventos.service.inscricao;
 
 import br.com.eventos.dto.InscricaoDTO;
 import br.com.eventos.exception.ApiException;
-import br.com.eventos.model.Inscricao;
+import br.com.eventos.entity.Inscricao;
 
 import java.util.Optional;
 
@@ -18,6 +18,6 @@ public interface InscricaoService {
 
     Iterable<Inscricao> buscarInscricoesPorEvento(Long eventoId);
 
-    Iterable<Inscricao> buscarInscricoesUsuario(Long idUsuario) throws ApiException;
+    Iterable<Inscricao> buscarInscricoesUsuarioLogado() throws ApiException;
 
 }

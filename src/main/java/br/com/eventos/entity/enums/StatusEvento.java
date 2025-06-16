@@ -1,4 +1,4 @@
-package br.com.eventos.model.enums;
+package br.com.eventos.entity.enums;
 
 public enum StatusEvento {
     ATIVO,

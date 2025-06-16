@@ -1,19 +1,13 @@
-package br.com.eventos.model;
+package br.com.eventos.dto;
 
-import io.micronaut.data.annotation.GeneratedValue;
-import io.micronaut.data.annotation.Id;
-import io.micronaut.data.annotation.MappedEntity;
+import io.micronaut.core.annotation.Introspected;
 import io.micronaut.serde.annotation.Serdeable;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 
+@Introspected
 @Serdeable
-@MappedEntity("usuario")
-public record Usuario(
-        @Id
-        @GeneratedValue
-        Long id,
-
+public record UsuarioDTO(
         @NotNull(message = "O nome é obrigatório")
         String nome,
 
@@ -22,5 +16,6 @@ public record Usuario(
         String email,
 
         @NotNull(message = "A senha é obrigatória")
-        String senha) {
+        String senha
+) {
 }
