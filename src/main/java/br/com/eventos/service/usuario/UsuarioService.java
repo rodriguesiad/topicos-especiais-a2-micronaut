@@ -1,8 +1,14 @@
 package br.com.eventos.service.usuario;
 
+import br.com.eventos.exception.ApiException;
 import br.com.eventos.model.Usuario;
-import br.com.eventos.service.BaseService;
 
-public interface UsuarioService extends BaseService<Usuario, Long> {
+import java.util.Optional;
 
+public interface UsuarioService {
+    Usuario cadastrar(Usuario model) throws ApiException;
+
+    Optional<Usuario> buscarPorId(Long id) throws ApiException;
+
+    Iterable<Usuario> buscarTodos();
 }

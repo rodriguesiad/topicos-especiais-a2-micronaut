@@ -25,7 +25,7 @@ public class EventoController {
     }
 
     @Post(consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<Evento> adicionarEvento(@Body @Valid Evento evento) {
+    public HttpResponse<Evento> adicionarEvento(@Body @Valid EventoDTO evento) {
         Evento novoEvento = eventoService.cadastrar(evento);
         return HttpResponse.created(novoEvento);
     }

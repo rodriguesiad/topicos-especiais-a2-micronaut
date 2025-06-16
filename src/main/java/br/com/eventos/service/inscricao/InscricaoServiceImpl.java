@@ -8,22 +8,23 @@ import br.com.eventos.model.Usuario;
 import br.com.eventos.repository.EventoRepository;
 import br.com.eventos.repository.InscricaoRepository;
 import br.com.eventos.repository.UsuarioRepository;
-import br.com.eventos.service.BaseServiceImpl;
 import io.micronaut.transaction.annotation.Transactional;
 import jakarta.inject.Singleton;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Singleton
-public class InscricaoServiceImpl extends BaseServiceImpl<Inscricao, Long> implements InscricaoService {
+public class InscricaoServiceImpl implements InscricaoService {
 
+    private final InscricaoRepository inscricaoRepository;
     private final UsuarioRepository usuarioRepository;
     private final EventoRepository eventoRepository;
 
     public InscricaoServiceImpl(InscricaoRepository inscricaoRepository,
                                 UsuarioRepository usuarioRepository,
                                 EventoRepository eventoRepository) {
-        super(inscricaoRepository);
+        this.inscricaoRepository = inscricaoRepository;
         this.usuarioRepository = usuarioRepository;
         this.eventoRepository = eventoRepository;
     }
@@ -35,21 +36,34 @@ public class InscricaoServiceImpl extends BaseServiceImpl<Inscricao, Long> imple
         Usuario usuario = buscarUsuarioLogado();
         Inscricao inscricao = new Inscricao(null, evento, usuario, LocalDate.now(), true);
 
-        return super.cadastrar(inscricao);
+        return this.inscricaoRepository.save(inscricao);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Inscricao> buscarPorId(Long id) throws ApiException {
+        return Optional.ofNullable(this.inscricaoRepository.findById(id)
+                .orElseThrow(() -> new ApiException("Inscrição não encontrada: " + id)));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Iterable<Inscricao> buscarTodos() {
+        return this.inscricaoRepository.findAll();
     }
 
     @Override
     @Transactional
     public void cancelarInscricao(Long idInscricao) throws ApiException {
-        Inscricao inscricao = getRepository().findById(idInscricao).orElseThrow(() -> new ApiException("Inscrição não encontrada"));
+        Inscricao inscricao = this.inscricaoRepository.findById(idInscricao).orElseThrow(() -> new ApiException("Inscrição não encontrada"));
         inscricao = new Inscricao(inscricao.id(), inscricao.evento(), inscricao.usuario(), inscricao.dataInscricao(), false);
-        getRepository().update(inscricao);
+        this.inscricaoRepository.update(inscricao);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Iterable<Inscricao> buscarInscricoesUsuario(Long idUsuario) throws ApiException {
-        return getRepository().findByUsuario_Id(idUsuario);
+        return this.inscricaoRepository.findByUsuario_Id(idUsuario);
     }
 
     private Usuario buscarUsuarioLogado() {
@@ -58,11 +72,7 @@ public class InscricaoServiceImpl extends BaseServiceImpl<Inscricao, Long> imple
 
     @Override
     public Iterable<Inscricao> buscarInscricoesPorEvento(Long eventoId) {
-        return getRepository().findByAtivoAndEventoId(true, eventoId);
+        return this.inscricaoRepository.findByAtivoAndEventoId(true, eventoId);
     }
 
-    @Override
-    public InscricaoRepository getRepository() {
-        return (InscricaoRepository) super.getRepository();
-    }
 }

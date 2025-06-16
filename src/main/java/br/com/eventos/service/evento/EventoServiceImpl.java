@@ -7,18 +7,20 @@ import br.com.eventos.model.Usuario;
 import br.com.eventos.model.enums.StatusEvento;
 import br.com.eventos.repository.EventoRepository;
 import br.com.eventos.repository.UsuarioRepository;
-import br.com.eventos.service.BaseServiceImpl;
 import io.micronaut.transaction.annotation.Transactional;
 import jakarta.inject.Singleton;
 
-@Singleton
-public class EventoServiceImpl extends BaseServiceImpl<Evento, Long> implements EventoService {
+import java.util.Optional;
 
+@Singleton
+public class EventoServiceImpl implements EventoService {
+
+    private final EventoRepository eventoRepository;
     private final UsuarioRepository usuarioRepository;
 
     public EventoServiceImpl(EventoRepository eventoRepository,
                              UsuarioRepository usuarioRepository) {
-        super(eventoRepository);
+        this.eventoRepository = eventoRepository;
         this.usuarioRepository = usuarioRepository;
     }
 
@@ -27,52 +29,65 @@ public class EventoServiceImpl extends BaseServiceImpl<Evento, Long> implements 
     public Evento cadastrar(EventoDTO dto) throws ApiException {
         Usuario usuario = buscarUsuarioLogado();
         Evento evento = new Evento(null, dto.nome(), dto.data(), dto.local(), usuario, StatusEvento.ATIVO);
-        return super.cadastrar(evento);
+        return this.eventoRepository.save(evento);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Evento> buscarPorId(Long id) throws ApiException {
+        return Optional.ofNullable(this.eventoRepository.findById(id)
+                .orElseThrow(() -> new ApiException("Evento não encontrado: " + id)));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Iterable<Evento> buscarTodos() {
+        return this.eventoRepository.findAll();
     }
 
     @Override
     @Transactional
     public Evento atualizarEvento(Long id, EventoDTO dto) throws ApiException {
-        Evento evento = getRepository().findById(id).orElseThrow(() -> new ApiException("Evento não encontrado"));
+        Evento evento = this.eventoRepository.findById(id).orElseThrow(() -> new ApiException("Evento não encontrado"));
 
         if (!isUsuarioDono(evento.usuario().id())) {
             throw new IllegalArgumentException("Você não tem permissão para atualizar este evento.");
         }
 
         evento = new Evento(id, dto.nome(), dto.data(), dto.local(), evento.usuario(), evento.status());
-        return getRepository().update(evento);
+        return this.eventoRepository.update(evento);
     }
 
     @Override
     @Transactional
     public void cancelarEvento(Long id) throws ApiException {
-        Evento evento = getRepository().findById(id).orElseThrow(() -> new ApiException("Evento não encontrado"));
+        Evento evento = this.eventoRepository.findById(id).orElseThrow(() -> new ApiException("Evento não encontrado"));
 
         if (!isUsuarioDono(evento.usuario().id())) {
             throw new IllegalArgumentException("Você não tem permissão para cancelar este evento.");
         }
 
         evento = new Evento(evento.id(), evento.nome(), evento.data(), evento.local(), evento.usuario(), StatusEvento.CANCELADO);
-        getRepository().update(evento);
+        this.eventoRepository.update(evento);
     }
 
     @Override
     @Transactional
     public void concluirEvento(Long id) throws ApiException {
-        Evento evento = getRepository().findById(id).orElseThrow(() -> new ApiException("Evento não encontrado"));
+        Evento evento = this.eventoRepository.findById(id).orElseThrow(() -> new ApiException("Evento não encontrado"));
 
         if (!isUsuarioDono(evento.usuario().id())) {
             throw new IllegalArgumentException("Você não tem permissão para concluir este evento.");
         }
 
         evento = new Evento(evento.id(), evento.nome(), evento.data(), evento.local(), evento.usuario(), StatusEvento.CONCLUIDO);
-        getRepository().update(evento);
+        this.eventoRepository.update(evento);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Iterable<Evento> buscarEventosPorUsuario(Long idUsuario) throws ApiException {
-        return getRepository().findByUsuario_Id(idUsuario);
+        return this.eventoRepository.findByUsuario_Id(idUsuario);
     }
 
     private Usuario buscarUsuarioLogado() {
@@ -82,11 +97,6 @@ public class EventoServiceImpl extends BaseServiceImpl<Evento, Long> implements 
     private Boolean isUsuarioDono(Long idUsuarioEvento) {
         Usuario usuarioLogado = buscarUsuarioLogado();
         return usuarioLogado.id() == idUsuarioEvento;
-    }
-
-    @Override
-    public EventoRepository getRepository() {
-        return (EventoRepository) super.getRepository();
     }
 
 }

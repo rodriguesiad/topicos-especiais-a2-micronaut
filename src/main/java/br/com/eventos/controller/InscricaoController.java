@@ -1,5 +1,6 @@
 package br.com.eventos.controller;
 
+import br.com.eventos.dto.InscricaoDTO;
 import br.com.eventos.model.Inscricao;
 import br.com.eventos.service.inscricao.InscricaoService;
 import io.micronaut.http.HttpResponse;
@@ -24,7 +25,7 @@ public class InscricaoController {
     }
 
     @Post(consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
-    public HttpResponse<Inscricao> adicionarInscricao(@Body @Valid Inscricao inscricao) {
+    public HttpResponse<Inscricao> adicionarInscricao(@Body @Valid InscricaoDTO inscricao) {
         Inscricao novoInscricao = inscricaoService.cadastrar(inscricao);
         return HttpResponse.created(novoInscricao);
     }

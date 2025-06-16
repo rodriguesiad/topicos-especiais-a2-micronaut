@@ -3,11 +3,16 @@ package br.com.eventos.service.inscricao;
 import br.com.eventos.dto.InscricaoDTO;
 import br.com.eventos.exception.ApiException;
 import br.com.eventos.model.Inscricao;
-import br.com.eventos.service.BaseService;
 
-public interface InscricaoService extends BaseService<Inscricao, Long> {
+import java.util.Optional;
+
+public interface InscricaoService {
 
     Inscricao cadastrar(InscricaoDTO dto) throws ApiException;
+
+    Optional<Inscricao> buscarPorId(Long id) throws ApiException;
+
+    Iterable<Inscricao> buscarTodos();
 
     void cancelarInscricao(Long idInscricao) throws ApiException;
 

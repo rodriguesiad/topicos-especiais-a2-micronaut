@@ -10,7 +10,7 @@
   <parent>
     <groupId>io.micronaut.platform</groupId>
     <artifactId>micronaut-parent</artifactId>
-    <version>4.8.2</version>
+    <version>4.7.6</version>
   </parent>
   <properties>
     <packaging>jar</packaging>
@@ -60,11 +60,6 @@
     <dependency>
       <groupId>io.micronaut.sql</groupId>
       <artifactId>micronaut-jdbc-hikari</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.micronaut.validation</groupId>
-      <artifactId>micronaut-validation</artifactId>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -122,9 +117,15 @@
       <artifactId>snakeyaml</artifactId>
       <scope>runtime</scope>
     </dependency>
+    <dependency>
+      <groupId>io.micronaut.test</groupId>
+      <artifactId>micronaut-test-junit5</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
+      <!-- Micronaut Maven plugin -->
       <plugin>
         <groupId>io.micronaut.maven</groupId>
         <artifactId>micronaut-maven-plugin</artifactId>
@@ -132,17 +133,25 @@
           <configFile>aot-${packaging}.properties</configFile>
         </configuration>
       </plugin>
+
+      <!-- Enforcer plugin to enforce the rules -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
       </plugin>
+
+      <!-- Maven Compiler Plugin with JDK 21 configuration -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.10.0</version> <!-- Make sure the version is compatible with JDK 21 -->
         <configuration>
-          <!-- Uncomment to enable incremental compilation -->
-          <!-- <useIncrementalCompilation>false</useIncrementalCompilation> -->
+          <!-- Set the Java version to 21 -->
+          <source>21</source>
+          <target>21</target>
+          <release>21</release>
 
+          <!-- Annotation processor configurations for Micronaut -->
           <annotationProcessorPaths combine.self="override">
             <path>
               <groupId>io.micronaut</groupId>
@@ -153,12 +162,6 @@
               <groupId>io.micronaut.data</groupId>
               <artifactId>micronaut-data-processor</artifactId>
               <version>${micronaut.data.version}</version>
-              <exclusions>
-                <exclusion>
-                  <groupId>io.micronaut</groupId>
-                  <artifactId>micronaut-inject</artifactId>
-                </exclusion>
-              </exclusions>
             </path>
             <path>
               <groupId>io.micronaut</groupId>
@@ -174,36 +177,20 @@
               <groupId>io.micronaut.security</groupId>
               <artifactId>micronaut-security-annotations</artifactId>
               <version>${micronaut.security.version}</version>
-              <exclusions>
-                <exclusion>
-                  <groupId>io.micronaut</groupId>
-                  <artifactId>micronaut-inject</artifactId>
-                </exclusion>
-              </exclusions>
             </path>
             <path>
               <groupId>io.micronaut.serde</groupId>
               <artifactId>micronaut-serde-processor</artifactId>
               <version>${micronaut.serialization.version}</version>
-              <exclusions>
-                <exclusion>
-                  <groupId>io.micronaut</groupId>
-                  <artifactId>micronaut-inject</artifactId>
-                </exclusion>
-              </exclusions>
             </path>
             <path>
               <groupId>io.micronaut.validation</groupId>
               <artifactId>micronaut-validation-processor</artifactId>
               <version>${micronaut.validation.version}</version>
-              <exclusions>
-                <exclusion>
-                  <groupId>io.micronaut</groupId>
-                  <artifactId>micronaut-inject</artifactId>
-                </exclusion>
-              </exclusions>
             </path>
           </annotationProcessorPaths>
+
+          <!-- Compiler arguments for Micronaut processing -->
           <compilerArgs>
             <arg>-Amicronaut.processing.group=br.com.eventos</arg>
             <arg>-Amicronaut.processing.module=eventosapp</arg>
@@ -212,7 +199,6 @@
       </plugin>
     </plugins>
   </build>
-
     <pluginRepositories>
        <pluginRepository>
            <id>central</id>
