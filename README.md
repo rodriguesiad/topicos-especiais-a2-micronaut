@@ -25,26 +25,31 @@ Este projeto faz parte da **A2 da disciplina de Tópicos Especiais**. Trata-se d
 
 - A autenticação é do tipo **HTTP Basic Auth**.
 
+---
+
+## 🐳 Como executar o projeto com Docker
+### 🚀 Subindo a aplicação e o banco de dados:
+
+Execute o comando:
+
+```bash
+docker-compose up --build
+```
+
+Isso irá subir:
+
+- 🔸 **MySQL** na porta `3307` (externa) e `3306` (interna no container).
+- 🔸 **API Micronaut** na porta `8080`.
 
 ---
 
-## 🐬 Banco de dados (MySQL no Docker)
+### 🔸 Credenciais do Banco de Dados:
 
-Execute o comando abaixo para subir o banco de dados MySQL com as credenciais configuradas:
-
-```bash
-docker run -d --rm -p 3307:3306 \
--e MYSQL_DATABASE=eventos_db \
--e MYSQL_USER=usereventos \
--e MYSQL_PASSWORD=passeventos \
--e MYSQL_ALLOW_EMPTY_PASSWORD=true \
-mysql:8
-```
-
-- 🔸 Porta exposta: `3307`
-- 🔸 Database: `eventos_db`
-- 🔸 Usuário: `usereventos`
-- 🔸 Senha: `passeventos`
+- **Database:** `eventos_db`
+- **Usuário:** `usereventos`
+- **Senha:** `passeventos`
+- **Host (dentro do Docker):** `mysqldb`
+- **Host (acesso externo):** `localhost:3307`
 
 ---
 
