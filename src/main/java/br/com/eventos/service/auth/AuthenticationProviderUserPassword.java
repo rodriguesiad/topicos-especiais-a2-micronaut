@@ -1,4 +1,4 @@
-package br.com.eventos.service;
+package br.com.eventos.service.auth;
 
 import br.com.eventos.entity.Usuario;
 import br.com.eventos.service.usuario.UsuarioService;

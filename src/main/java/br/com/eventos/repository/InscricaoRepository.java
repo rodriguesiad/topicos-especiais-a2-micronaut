@@ -32,4 +32,6 @@ public interface InscricaoRepository extends CrudRepository<Inscricao, Long> {
     @Join(value = "evento.usuario", type = Join.Type.FETCH)
     Optional<Inscricao> findById(Long id);
 
+    Optional<Inscricao> findByEventoIdAndUsuarioIdAndAtivoTrue(Long eventoId, Long usuarioId);
+
 }

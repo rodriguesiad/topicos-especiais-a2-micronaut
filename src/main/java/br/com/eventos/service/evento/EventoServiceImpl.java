@@ -33,6 +33,12 @@ public class EventoServiceImpl implements EventoService {
     @Transactional
     public Evento cadastrar(EventoDTO dto) throws ApiException {
         Usuario usuario = buscarUsuarioLogado();
+        Optional<Evento> eventoExistente = eventoRepository.findByNomeAndDataAndLocal(dto.nome(), dto.data(), dto.local());
+
+        if (eventoExistente.isPresent()) {
+            throw new ApiException("Já existe um evento cadastrado com este nome, data e local.");
+        }
+
         Evento evento = new Evento(null, dto.nome(), dto.data(), dto.local(), usuario, StatusEvento.ATIVO);
         return this.eventoRepository.save(evento);
     }

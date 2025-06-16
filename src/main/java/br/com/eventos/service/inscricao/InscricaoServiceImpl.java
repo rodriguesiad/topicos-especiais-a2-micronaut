@@ -48,6 +48,14 @@ public class InscricaoServiceImpl implements InscricaoService {
         }
 
         Usuario usuario = buscarUsuarioLogado();
+
+        Optional<Inscricao> inscricaoExistente = inscricaoRepository
+                .findByEventoIdAndUsuarioIdAndAtivoTrue(evento.getId(), usuario.getId());
+
+        if (inscricaoExistente.isPresent()) {
+            throw new ApiException("Você já está inscrito neste evento.");
+        }
+
         Inscricao inscricao = new Inscricao(null, evento, usuario, LocalDate.now(), true);
 
         return this.inscricaoRepository.save(inscricao);

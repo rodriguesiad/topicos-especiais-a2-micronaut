@@ -1,4 +1,4 @@
-package br.com.eventos.service;
+package br.com.eventos.service.auth;
 
 import io.micronaut.context.annotation.Replaces;
 import io.micronaut.core.annotation.Nullable;
