@@ -2,14 +2,14 @@ micronaut:
   application:
     name: eventosapp
   server:
-    port: 8080
+    port: ${SERVER_PORT:8080}
 
 datasources:
   default:
-    url: jdbc:mysql://localhost:3307/${MYSQL_DATABASE:eventos_db}?autoReconnect=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-    username: ${MYSQL_USER:usereventos}
-    password: ${MYSQL_PASSWORD:passeventos}
-    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://mysqldb:3306/eventos_db?autoReconnect=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: usereventos
+    password: passeventos
+    driver-class-name: com.mysql.cj.jdbc.Driver
     dialect: MYSQL
 
 flyway:
